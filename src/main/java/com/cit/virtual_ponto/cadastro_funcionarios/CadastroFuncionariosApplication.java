@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RegistroPontoFuncionarioApplication {
+public class CadastroFuncionariosApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RegistroPontoFuncionarioApplication.class, args);
+		SpringApplication.run(CadastroFuncionariosApplication.class, args);
 	}
 
 }

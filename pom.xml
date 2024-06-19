@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.cit.virtual-ponto</groupId>
 	<artifactId>registro-ponto-funcionario</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
-	<name>registro-ponto-funcionario</name>
-	<description>Microserviço para controle jornada ponto virtual - registro de entrada e saída</description>
+	<version>0.0.1</version>
+	<name>cadastro-funcionarios</name>
+	<description>Microserviço para controle e cadastro de funcionario no ponto virtual</description>
 	<url/>
 	<licenses>
 		<license/>
