@@ -1,4 +1,4 @@
- # Changelog [registro-ponto-funcionario>]
+ # Changelog [cadastro-funcionarios>]
 
 As principais alterações neste projeto serão documentadas neste arquivo.
 
@@ -16,18 +16,4 @@ Segurança        para incentivar usuários a atualizarem em caso de vulnerabili
 
 ## [1.0.0] - 18/06/2024
 ### Adicionado
- - Primeira versão do projeto, registro de entrada e saída por idFuncionario.
- - Validação de data, entrada e saida para os tipos de registro.
-
-## [1.1.0] - 18/06/2024
-### Adicionado
- - Testes Unitários.
- - Cobertura total 77%.
-
- ## [1.1.1] - 19/06/2024
-### Adicionado
- - Lista de entrada e saída
- ### Modificado
- - Logica registro ponto entrada e saída.
- - Testes Unitários.
- - Cobertura total 90%.
+ -

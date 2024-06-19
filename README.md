@@ -1,15 +1,11 @@
-# cit-virtual-ponto-registro-ponto-funcionario
+# cit-virtual-ponto-cadastro-funcionarios
 
-O cit-virtual-ponto-registro-ponto-funcionario é um microsserviço para controle jornada ponto virtual - registro de entrada e saída
+O cit-virtual-ponto-cadastro-funcionarios é um microsserviço para controle e cadastro de funcionarios no ponto virtual.
 
 ## Funcionamento
 
-O serviço recebe uma solicitação por idFuncionario
-    - Verifica se já existe um registro de entrada para o funcionário na data da solicitação.
-    - Verifica a última ação registrada (entrada ou saída).
-      - Se o último registro foi uma entrada: atualiza para incluir a saída.
-      - Se o último registro foi uma saída: atualiza um novo registro de entrada.
-    - Se não há registro de entrada hoje: insere um novo registro de entrada.
+O serviço recebe uma solicitação 
+    - 
 
 Este projeto é codificado em Java 17/Maven utilizando o framework [SpringBoot](<https://spring.io/>) 3.3.0.
 
