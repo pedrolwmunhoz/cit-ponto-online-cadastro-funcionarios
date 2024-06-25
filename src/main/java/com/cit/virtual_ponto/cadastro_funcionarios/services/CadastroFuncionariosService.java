@@ -33,10 +33,10 @@ public class CadastroFuncionariosService {
             Long empresaId = funcionario.getEmpresa().getEmpresaId();
             Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
 
-            //valida empresa e funcionario existe
+            // valida empresa e funcionario existe
             this.validarCadastroFuncionario(funcionario, optionalEmpresa);
 
-            //salva novo funcionario
+            // salva novo funcionario
             funcionario.setEmpresa(optionalEmpresa.get());
             return cadastroFuncionariosRepository.save(funcionario);
         } catch (Exception e) {
@@ -89,9 +89,9 @@ public class CadastroFuncionariosService {
         }
     }
 
-    public void validarCadastroFuncionario(FuncionarioEntity funcionario, Optional<EmpresaEntity> optionalEmpresa){
-        
-        //Verifica se a empresa existe
+    public void validarCadastroFuncionario(FuncionarioEntity funcionario, Optional<EmpresaEntity> optionalEmpresa) {
+
+        // Verifica se a empresa existe
         Long empresaId = funcionario.getEmpresa().getEmpresaId();
         optionalEmpresa = empresaRepository.findById(empresaId);
         if (!optionalEmpresa.isPresent()) {
