@@ -52,4 +52,10 @@ public class CadastroFuncionariosController {
         List<CadastroFuncionariosEntity> funcionarios = funcionariosService.listarFuncionarios();
         return ResponseEntity.ok(funcionarios);
     }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<CadastroFuncionariosEntity>> buscarFuncionariosPorNome(@RequestParam String nome) {
+        List<CadastroFuncionariosEntity> funcionarios = funcionariosService.buscarFuncionariosPorNome(nome);
+        return ResponseEntity.ok(funcionarios);
+    }
 }
