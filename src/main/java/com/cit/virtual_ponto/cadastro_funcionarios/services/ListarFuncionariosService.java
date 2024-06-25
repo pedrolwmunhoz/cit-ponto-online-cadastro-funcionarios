@@ -29,7 +29,7 @@ public class ListarFuncionariosService {
             if (funcionario.isPresent()) {
                 return funcionario;
             } else {
-                throw new ErrosSistema.FuncionarioNotFoundException(
+                throw new ErrosSistema.FuncionarioException(
                         EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + id);
             }
         } catch (Exception e) {

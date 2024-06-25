@@ -28,7 +28,7 @@ public class CadastroFuncionariosService {
             Long empresaId = funcionario.getEmpresa().getEmpresaId();
             Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
             if (!optionalEmpresa.isPresent()) {
-                throw new ErrosSistema.EmpresaNotFoundException(
+                throw new ErrosSistema.EmpresaException(
                         EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + empresaId);
             }
             funcionario.setEmpresa(optionalEmpresa.get());
@@ -48,7 +48,7 @@ public class CadastroFuncionariosService {
                 Long empresaId = funcionario.getEmpresa().getEmpresaId();
                 Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
                 if (!optionalEmpresa.isPresent()) {
-                    throw new ErrosSistema.EmpresaNotFoundException(
+                    throw new ErrosSistema.EmpresaException(
                             EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + empresaId);
                 }
                 funcionarioExistente.setNome(funcionario.getNome());
@@ -59,7 +59,7 @@ public class CadastroFuncionariosService {
 
                 return cadastroFuncionariosRepository.save(funcionarioExistente);
             } else {
-                throw new ErrosSistema.FuncionarioNotFoundException(
+                throw new ErrosSistema.FuncionarioException(
                         EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + funcionarioId);
             }
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class CadastroFuncionariosService {
                 cadastroFuncionariosRepository.deleteById(id);
                 return true;
             } else {
-                throw new ErrosSistema.FuncionarioNotFoundException(
+                throw new ErrosSistema.FuncionarioException(
                         EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + id);
             }
         } catch (Exception e) {

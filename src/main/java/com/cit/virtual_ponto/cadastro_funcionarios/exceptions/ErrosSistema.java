@@ -3,14 +3,14 @@ package com.cit.virtual_ponto.cadastro_funcionarios.exceptions;
 
 public class ErrosSistema {
 
-    public static final class EmpresaNotFoundException extends RuntimeException {
-        public EmpresaNotFoundException(String message) {
+    public static final class EmpresaException extends RuntimeException {
+        public EmpresaException(String message) {
             super(message);
         }
     }
 
-    public static final class FuncionarioNotFoundException extends RuntimeException {
-        public FuncionarioNotFoundException(String message) {
+    public static final class FuncionarioException extends RuntimeException {
+        public FuncionarioException(String message) {
             super(message);
         }
     }
