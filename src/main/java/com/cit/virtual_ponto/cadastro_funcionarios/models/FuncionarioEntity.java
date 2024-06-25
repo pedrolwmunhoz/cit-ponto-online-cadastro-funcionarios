@@ -17,12 +17,16 @@ public class FuncionarioEntity {
     @JoinColumn(name = "empresa_id", nullable = false)
     private EmpresaEntity empresa;
 
+    @Column(unique = true)
     private String nome;
 
+    @Column(unique = true)
     private String cpf;
 
+    @Column(unique = true)
     private String email;
 
+    @Column(unique = true)
     private String telefone;
 
 }
