@@ -7,7 +7,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Data
-@Entity
+@Entity(name = "EmpresaEntity")
 @Table(name = "empresa")
 public class EmpresaEntity {
 

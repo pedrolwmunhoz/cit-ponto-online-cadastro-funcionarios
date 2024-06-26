@@ -33,10 +33,10 @@ public class CadastroFuncionariosService {
             Long empresaId = funcionario.getEmpresa().getEmpresaId();
             Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
 
-            // valida empresa e funcionario existe
+            // valida se empresa e funcionario existem
             this.validarCadastroFuncionario(funcionario, optionalEmpresa);
 
-            // salva novo funcionario
+            // salva o novo funcionario
             funcionario.setEmpresa(optionalEmpresa.get());
             return cadastroFuncionariosRepository.save(funcionario);
         } catch (Exception e) {
@@ -45,18 +45,24 @@ public class CadastroFuncionariosService {
         }
     }
 
+    @Transactional
     public FuncionarioEntity atualizarFuncionario(FuncionarioEntity funcionario) {
-        Long funcionarioId = funcionario.getFuncionarioId();
         try {
+            
+            Long empresaId = funcionario.getEmpresa().getEmpresaId();
+            Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
+            //valida se empresa existe
+            if (!optionalEmpresa.isPresent()) {
+                throw new ErrosSistema.EmpresaException(
+                    EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + empresaId + " Empresa inexistente");
+            } 
+            Long funcionarioId = funcionario.getFuncionarioId();
             Optional<FuncionarioEntity> optionalFuncionario = cadastroFuncionariosRepository.findById(funcionarioId);
+            //valida se funcionario existe
             if (optionalFuncionario.isPresent()) {
+    
                 FuncionarioEntity funcionarioExistente = optionalFuncionario.get();
-                Long empresaId = funcionario.getEmpresa().getEmpresaId();
-                Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
-                if (!optionalEmpresa.isPresent()) {
-                    throw new ErrosSistema.EmpresaException(
-                            EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + empresaId);
-                }
+
                 funcionarioExistente.setNome(funcionario.getNome());
                 funcionarioExistente.setCpf(funcionario.getCpf());
                 funcionarioExistente.setEmail(funcionario.getEmail());
@@ -66,14 +72,15 @@ public class CadastroFuncionariosService {
                 return cadastroFuncionariosRepository.save(funcionarioExistente);
             } else {
                 throw new ErrosSistema.FuncionarioException(
-                        EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + funcionarioId);
+                        EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + funcionarioId + " Funcionario inexistente");
             }
         } catch (Exception e) {
             throw new ErrosSistema.DatabaseException(
                     EnumErrosCadastroFuncionario.ERRO_ATUALIZAR_FUNCIONARIO.getMensagemErro(), e);
         }
     }
-
+    
+   @Transactional
     public boolean excluirFuncionario(Long id) {
         try {
             if (cadastroFuncionariosRepository.existsById(id)) {
@@ -81,7 +88,7 @@ public class CadastroFuncionariosService {
                 return true;
             } else {
                 throw new ErrosSistema.FuncionarioException(
-                        EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + id);
+                        EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + id + " Funcionario inexistente");
             }
         } catch (Exception e) {
             throw new ErrosSistema.DatabaseException(
