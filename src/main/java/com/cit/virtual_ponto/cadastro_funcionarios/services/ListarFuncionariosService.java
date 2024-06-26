@@ -4,14 +4,23 @@ import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.EnumErrosCadastroF
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ListarFuncionariosService {
 
     private CadastroFuncionariosRepository cadastroFuncionariosRepository;
+
+    @Autowired
+    public ListarFuncionariosService(CadastroFuncionariosRepository cadastroFuncionariosRepository) {
+        this.cadastroFuncionariosRepository = cadastroFuncionariosRepository;
+    }
 
     
     public List<FuncionarioEntity> listarFuncionarios() {

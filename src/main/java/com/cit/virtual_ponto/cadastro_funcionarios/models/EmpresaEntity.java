@@ -3,6 +3,7 @@ package com.cit.virtual_ponto.cadastro_funcionarios.models;
 import lombok.Data;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 
@@ -52,6 +53,7 @@ public class EmpresaEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FuncionarioEntity> funcionarios;
 
