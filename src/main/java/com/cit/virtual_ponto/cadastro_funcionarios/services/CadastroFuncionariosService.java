@@ -1,5 +1,6 @@
 package com.cit.virtual_ponto.cadastro_funcionarios.services;
 
+import com.cit.virtual_ponto.cadastro_funcionarios.dto.FuncionarioDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.EnumErrosCadastroFuncionario;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
@@ -9,7 +10,9 @@ import com.cit.virtual_ponto.cadastro_funcionarios.repositories.EmpresaRepositor
 
 import jakarta.transaction.Transactional;
 
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -19,6 +22,13 @@ public class CadastroFuncionariosService {
     private CadastroFuncionariosRepository cadastroFuncionariosRepository;
     private EmpresaRepository empresaRepository;
 
+    private StringEncryptor encryptor;
+
+    @Autowired
+    public void setEncryptor(@Qualifier("jasyptStringEncryptor") StringEncryptor encryptor) {
+        this.encryptor = encryptor;
+    }
+
     @Autowired
     public CadastroFuncionariosService(CadastroFuncionariosRepository cadastroFuncionariosRepository,
             EmpresaRepository empresaRepository) {
@@ -27,83 +37,79 @@ public class CadastroFuncionariosService {
     }
 
     @Transactional
-    public FuncionarioEntity cadastrarFuncionario(FuncionarioEntity funcionario) {
-        try {
+    public FuncionarioEntity cadastrarFuncionario(FuncionarioDto funcionario) {
 
-            Long empresaId = funcionario.getEmpresa().getEmpresaId();
-            Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
+        Long empresaId = funcionario.getEmpresaId();
+        Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
 
-            // valida se empresa e funcionario existem
-            this.validarCadastroFuncionario(funcionario, optionalEmpresa);
+        // valida se empresa e funcionario existem
+        this.validarCadastroFuncionario(funcionario, optionalEmpresa);
 
-            // salva o novo funcionario
-            funcionario.setEmpresa(optionalEmpresa.get());
-            return cadastroFuncionariosRepository.save(funcionario);
-        } catch (Exception e) {
-            throw new ErrosSistema.DatabaseException(
-                    EnumErrosCadastroFuncionario.ERRO_CADASTRAR_FUNCIONARIO.getMensagemErro(), e);
+        FuncionarioEntity funcionarioNovo = new FuncionarioEntity();
+
+        // criptografia dos dados
+        funcionarioNovo.setEmpresa(optionalEmpresa.get());
+        this.encryptFuncionarioFields(funcionarioNovo, funcionario);
+
+        // salva funcionario
+        cadastroFuncionariosRepository.save(funcionarioNovo);
+
+        // descriptografia pra retornar funcionario
+        this.decryptFuncionarioFields(funcionarioNovo);
+        return funcionarioNovo;
+
+    }
+
+    @Transactional
+    public FuncionarioEntity atualizarFuncionario(FuncionarioDto funcionario) {
+
+        // valida se empresa existe
+        Long empresaId = funcionario.getEmpresaId();
+        Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
+        if (!optionalEmpresa.isPresent()) {
+            throw new ErrosSistema.EmpresaException(
+                    EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro());
+        }
+
+        // valida se funcionario existe
+        Long funcionarioId = funcionario.getFuncionarioId();
+        Optional<FuncionarioEntity> optionalFuncionario = cadastroFuncionariosRepository.findById(funcionarioId);
+        if (optionalFuncionario.isPresent()) {
+
+            // criptografia dos dados
+            FuncionarioEntity funcionarioExistente = optionalFuncionario.get();
+            funcionarioExistente.setEmpresa(optionalEmpresa.get());
+            this.encryptFuncionarioFields(funcionarioExistente, funcionario);
+
+            // salva funcionario
+            cadastroFuncionariosRepository.save(funcionarioExistente);
+
+            // descriptografia pra retornar funcionario
+            this.decryptFuncionarioFields(funcionarioExistente);
+            return funcionarioExistente;
+
+        } else {
+            throw new ErrosSistema.FuncionarioException(
+                    EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro());
         }
     }
 
     @Transactional
-    public FuncionarioEntity atualizarFuncionario(FuncionarioEntity funcionario) {
-        try {
-            
-            Long empresaId = funcionario.getEmpresa().getEmpresaId();
-            Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
-            //valida se empresa existe
-            if (!optionalEmpresa.isPresent()) {
-                throw new ErrosSistema.EmpresaException(
-                    EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + empresaId + " Empresa inexistente");
-            } 
-            Long funcionarioId = funcionario.getFuncionarioId();
-            Optional<FuncionarioEntity> optionalFuncionario = cadastroFuncionariosRepository.findById(funcionarioId);
-            //valida se funcionario existe
-            if (optionalFuncionario.isPresent()) {
-    
-                FuncionarioEntity funcionarioExistente = optionalFuncionario.get();
-
-                funcionarioExistente.setNome(funcionario.getNome());
-                funcionarioExistente.setCpf(funcionario.getCpf());
-                funcionarioExistente.setEmail(funcionario.getEmail());
-                funcionarioExistente.setTelefone(funcionario.getTelefone());
-                funcionarioExistente.setEmpresa(optionalEmpresa.get());
-
-                return cadastroFuncionariosRepository.save(funcionarioExistente);
-            } else {
-                throw new ErrosSistema.FuncionarioException(
-                        EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + funcionarioId + " Funcionario inexistente");
-            }
-        } catch (Exception e) {
-            throw new ErrosSistema.DatabaseException(
-                    EnumErrosCadastroFuncionario.ERRO_ATUALIZAR_FUNCIONARIO.getMensagemErro(), e);
-        }
-    }
-    
-   @Transactional
     public boolean excluirFuncionario(Long id) {
-        try {
-            if (cadastroFuncionariosRepository.existsById(id)) {
-                cadastroFuncionariosRepository.deleteById(id);
-                return true;
-            } else {
-                throw new ErrosSistema.FuncionarioException(
-                        EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + id + " Funcionario inexistente");
-            }
-        } catch (Exception e) {
-            throw new ErrosSistema.DatabaseException(
-                    EnumErrosCadastroFuncionario.ERRO_EXCLUIR_FUNCIONARIO.getMensagemErro(), e);
+        if (cadastroFuncionariosRepository.existsById(id)) {
+            cadastroFuncionariosRepository.deleteById(id);
+            return true;
+        } else {
+            throw new ErrosSistema.FuncionarioException(
+                    EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro());
         }
     }
 
-    public void validarCadastroFuncionario(FuncionarioEntity funcionario, Optional<EmpresaEntity> optionalEmpresa) {
+    public void validarCadastroFuncionario(FuncionarioDto funcionario, Optional<EmpresaEntity> optionalEmpresa) {
 
-        // Verifica se a empresa existe
-        Long empresaId = funcionario.getEmpresa().getEmpresaId();
-        optionalEmpresa = empresaRepository.findById(empresaId);
         if (!optionalEmpresa.isPresent()) {
             throw new ErrosSistema.EmpresaException(
-                    EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + empresaId);
+                    EnumErrosCadastroFuncionario.EMPRESA_NAO_ENCONTRADA.getMensagemErro() + funcionario.getEmpresaId());
         }
 
         // Verifica se o email já está cadastrado
@@ -111,7 +117,7 @@ public class CadastroFuncionariosService {
         Optional<FuncionarioEntity> optionalFuncionarioByEmail = cadastroFuncionariosRepository.findByEmail(email);
         if (optionalFuncionarioByEmail.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
-                    "Email já cadastrado: " + email);
+                    "Email já cadastrado");
         }
 
         // Verifica se o nome já está cadastrado
@@ -119,7 +125,7 @@ public class CadastroFuncionariosService {
         Optional<FuncionarioEntity> optionalFuncionarioByNome = cadastroFuncionariosRepository.findByNome(nome);
         if (optionalFuncionarioByNome.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
-                    "Nome já cadastrado: " + nome);
+                    "Nome já cadastrado");
         }
 
         // Verifica se o CPF já está cadastrado
@@ -127,7 +133,7 @@ public class CadastroFuncionariosService {
         Optional<FuncionarioEntity> optionalFuncionarioByCpf = cadastroFuncionariosRepository.findByCpf(cpf);
         if (optionalFuncionarioByCpf.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
-                    "CPF já cadastrado: " + cpf);
+                    "CPF já cadastrado");
         }
 
         // Verifica se o telefone já está cadastrado
@@ -136,8 +142,30 @@ public class CadastroFuncionariosService {
                 .findByTelefone(telefone);
         if (optionalFuncionarioByTelefone.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
-                    "Telefone já cadastrado: " + telefone);
+                    "Telefone já cadastrado");
         }
 
+    }
+
+    private void encryptFuncionarioFields(FuncionarioEntity novoFuncionario, FuncionarioDto funcionario) {
+        novoFuncionario.setCpf(encrypt(funcionario.getCpf()));
+        novoFuncionario.setEmail(encrypt(funcionario.getEmail()));
+        novoFuncionario.setNome(encrypt(funcionario.getNome()));
+        novoFuncionario.setTelefone(encrypt(funcionario.getTelefone()));
+    }
+
+    public String encrypt(String encryptedValue) {
+        return encryptor.encrypt(encryptedValue);
+    }
+
+    private void decryptFuncionarioFields(FuncionarioEntity funcionario) {
+        funcionario.setCpf(decrypt(funcionario.getCpf()));
+        funcionario.setEmail(decrypt(funcionario.getEmail()));
+        funcionario.setNome(decrypt(funcionario.getNome()));
+        funcionario.setTelefone(decrypt(funcionario.getTelefone()));
+    }
+
+    public String decrypt(String encryptedValue) {
+        return encryptor.encrypt(encryptedValue);
     }
 }

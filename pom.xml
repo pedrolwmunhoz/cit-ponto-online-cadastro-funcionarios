@@ -81,6 +81,20 @@
 			<version>4.0.0</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- validação -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+
+		<!-- Criptografia -->
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>3.0.4</version> <!-- Verifique a versão mais recente -->
+		</dependency>
 	</dependencies>
 
 	<build>

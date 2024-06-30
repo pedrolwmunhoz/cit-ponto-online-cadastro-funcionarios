@@ -1,8 +1,8 @@
 package com.cit.virtual_ponto.cadastro_funcionarios.exceptions;
 
 public enum EnumErrosCadastroFuncionario {
-    FUNCIONARIO_NAO_ENCONTRADO_ID("Funcionário não encontrado com o ID:"),
-    EMPRESA_NAO_ENCONTRADA("Empresa não encontrada com o ID: "),
+    FUNCIONARIO_NAO_ENCONTRADO_ID("Funcionário com o ID não encontrado"),
+    EMPRESA_NAO_ENCONTRADA("Empresa com o ID não encontrada"),
 
     ERRO_CADASTRAR_FUNCIONARIO("Erro ao cadastrar funcionário"),
     ERRO_ATUALIZAR_FUNCIONARIO("Erro ao atualizar funcionário"),
