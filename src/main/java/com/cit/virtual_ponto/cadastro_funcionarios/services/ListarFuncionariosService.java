@@ -45,7 +45,7 @@ public class ListarFuncionariosService {
             return funcionarioExistente;
         } else {
             throw new ErrosSistema.FuncionarioException(
-                    EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro() + id);
+                    EnumErrosCadastroFuncionario.FUNCIONARIO_NAO_ENCONTRADO_ID.getMensagemErro());
         }
     }
 
