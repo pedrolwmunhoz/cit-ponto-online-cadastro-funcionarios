@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
+import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 
@@ -40,7 +41,7 @@ public class ValidaLoginFuncionarioService {
                 return funcionario; 
             }
         }
-        throw new IllegalArgumentException("Funcionário não encontrado para o email fornecido.");
+        throw new ErrosSistema.FuncionarioException("Credenciais inválidas.");
     }
 }
 
