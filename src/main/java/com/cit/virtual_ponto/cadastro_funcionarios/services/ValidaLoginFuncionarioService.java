@@ -38,10 +38,23 @@ public class ValidaLoginFuncionarioService {
             String senhaDescriptografada = encryptor.decrypt(funcionario.getSenha());
 
             if (senhaDescriptografada.equals(loginRequestDto.getSenha())) {
+                this.decryptFuncionarioFields(funcionario);
                 return funcionario; 
             }
         }
         throw new ErrosSistema.FuncionarioException("Credenciais inválidas.");
     }
+
+
+    private void decryptFuncionarioFields(FuncionarioEntity funcionario) {
+        funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
+        funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
+        funcionario.setNome(encryptor.decrypt(funcionario.getNome()));
+        funcionario.setSenha(encryptor.decrypt(funcionario.getSenha()));
+        funcionario.setData_nascimento(encryptor.decrypt(funcionario.getData_nascimento()));
+        funcionario.setSalario(encryptor.decrypt(funcionario.getSalario()));
+        funcionario.setCargo(encryptor.decrypt(funcionario.getCargo()));
+    }
+
 }
 
