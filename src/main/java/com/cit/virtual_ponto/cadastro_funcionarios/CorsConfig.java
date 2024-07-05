@@ -1,5 +1,4 @@
-package com.cit.virtual_ponto.cadastro_funcionarios;
-import org.springframework.context.annotation.Bean;
+package com.cit.virtual_ponto.cadastro_funcionarios;import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -12,12 +11,15 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
+        
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*"); // Permite todas as origens
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        
+        // Registrando a configuração global para todos os endpoints
         source.registerCorsConfiguration("/**", config);
+        
         return new CorsFilter(source);
     }
 }
-
