@@ -22,13 +22,13 @@ public class ListarFuncionariosService {
     private StringEncryptor encryptor;
 
     @Autowired
-    public ListarFuncionariosService(CadastroFuncionariosRepository cadastroFuncionariosRepository) {
-        this.cadastroFuncionariosRepository = cadastroFuncionariosRepository;
-    }
-
-    @Autowired
     public void setEncryptor(@Qualifier("jasyptStringEncryptor") StringEncryptor encryptor) {
         this.encryptor = encryptor;
+    }
+    
+    @Autowired
+    public ListarFuncionariosService(CadastroFuncionariosRepository cadastroFuncionariosRepository) {
+        this.cadastroFuncionariosRepository = cadastroFuncionariosRepository;
     }
 
     public List<FuncionarioEntity> listarFuncionarios() {
@@ -64,10 +64,13 @@ public class ListarFuncionariosService {
         funcionario.setCpf(decrypt(funcionario.getCpf()));
         funcionario.setEmail(decrypt(funcionario.getEmail()));
         funcionario.setNome(decrypt(funcionario.getNome()));
-        funcionario.setTelefone(decrypt(funcionario.getTelefone()));
+        funcionario.setSenha(decrypt(funcionario.getSenha()));
+        funcionario.setData_nascimento(decrypt(funcionario.getData_nascimento()));
+        funcionario.setSalario(decrypt(funcionario.getSalario()));
+        funcionario.setCargo(decrypt(funcionario.getCargo()));
     }
 
     public String decrypt(String encryptedValue) {
-        return encryptor.encrypt(encryptedValue);
+        return encryptor.decrypt(encryptedValue);
     }
 }

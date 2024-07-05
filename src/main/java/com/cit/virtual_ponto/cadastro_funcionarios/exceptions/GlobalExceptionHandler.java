@@ -46,11 +46,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetails> handleGlobalException(Exception ex, WebRequest request) {
-        logger.error("Exception: {}", ex.getMessage(), ex);
-        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),
-                request.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    public Exception handleGlobalException(Exception ex, WebRequest request) {
+        return ex;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

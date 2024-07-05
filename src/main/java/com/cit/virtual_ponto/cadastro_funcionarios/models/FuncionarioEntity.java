@@ -2,6 +2,8 @@ package com.cit.virtual_ponto.cadastro_funcionarios.models;
 
 import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Data
@@ -12,7 +14,8 @@ public class FuncionarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long funcionarioId;
-
+    
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
     private EmpresaEntity empresa;
@@ -28,5 +31,17 @@ public class FuncionarioEntity {
 
     @Column(unique = true)
     private String telefone;
+
+    @Column(nullable = false)
+    private String senha;
+
+    @Column()
+    private String data_nascimento;
+
+    @Column()
+    private String salario;
+
+    @Column()
+    private String cargo;
 
 }

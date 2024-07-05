@@ -1,9 +1,12 @@
 package com.cit.virtual_ponto.cadastro_funcionarios.controller;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.FuncionarioDto;
+import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
 import com.cit.virtual_ponto.cadastro_funcionarios.services.CadastroFuncionariosService;
 import com.cit.virtual_ponto.cadastro_funcionarios.services.ListarFuncionariosService;
+import com.cit.virtual_ponto.cadastro_funcionarios.services.ValidaLoginFuncionarioService;
+
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.Valid;
@@ -23,17 +26,20 @@ public class CadastroFuncionariosController {
 
     private final CadastroFuncionariosService funcionariosService;
     private final ListarFuncionariosService listarFuncionariosService;
+    private final ValidaLoginFuncionarioService validaLoginFuncionarioService;
+    
 
     @Autowired
     public CadastroFuncionariosController(CadastroFuncionariosService funcionariosService,
-            ListarFuncionariosService listarFuncionariosService) {
+            ListarFuncionariosService listarFuncionariosService, ValidaLoginFuncionarioService validaLoginFuncionarioService) {
         this.funcionariosService = funcionariosService;
         this.listarFuncionariosService = listarFuncionariosService;
+        this.validaLoginFuncionarioService = validaLoginFuncionarioService;
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<FuncionarioEntity> cadastrarFuncionario(@RequestBody @Valid FuncionarioDto funcionario) {
-        FuncionarioEntity novoFuncionario = funcionariosService.cadastrarFuncionario(funcionario);
+    public ResponseEntity<FuncionarioEntity> cadastrarFuncionario(@RequestBody @Valid FuncionarioDto funcionarioDto ) {
+        FuncionarioEntity novoFuncionario = funcionariosService.cadastrarFuncionario(funcionarioDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFuncionario);
     }
 
@@ -67,6 +73,11 @@ public class CadastroFuncionariosController {
     public ResponseEntity<FuncionarioEntity> buscarFuncionarioPorId(
             @PathVariable @Min(value = 1, message = "O ID do funcionário deve ser um valor positivo") Long id) {
         return ResponseEntity.ok(listarFuncionariosService.buscarFuncionarioPorId(id));
+    }
+
+    @PostMapping("/validar-login")
+    public ResponseEntity<FuncionarioEntity> validarLogin(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+        return ResponseEntity.ok(validaLoginFuncionarioService.validarLogin(loginRequestDto));
     }
 
 }

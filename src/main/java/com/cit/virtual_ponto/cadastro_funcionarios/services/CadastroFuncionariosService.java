@@ -47,15 +47,11 @@ public class CadastroFuncionariosService {
 
         FuncionarioEntity funcionarioNovo = new FuncionarioEntity();
 
-        // criptografia dos dados
         funcionarioNovo.setEmpresa(optionalEmpresa.get());
         this.encryptFuncionarioFields(funcionarioNovo, funcionario);
 
         // salva funcionario
         cadastroFuncionariosRepository.save(funcionarioNovo);
-
-        // descriptografia pra retornar funcionario
-        this.decryptFuncionarioFields(funcionarioNovo);
         return funcionarioNovo;
 
     }
@@ -84,8 +80,6 @@ public class CadastroFuncionariosService {
             // salva funcionario
             cadastroFuncionariosRepository.save(funcionarioExistente);
 
-            // descriptografia pra retornar funcionario
-            this.decryptFuncionarioFields(funcionarioExistente);
             return funcionarioExistente;
 
         } else {
@@ -144,28 +138,20 @@ public class CadastroFuncionariosService {
             throw new ErrosSistema.FuncionarioException(
                     "Telefone já cadastrado");
         }
-
     }
 
     private void encryptFuncionarioFields(FuncionarioEntity novoFuncionario, FuncionarioDto funcionario) {
-        novoFuncionario.setCpf(encrypt(funcionario.getCpf()));
-        novoFuncionario.setEmail(encrypt(funcionario.getEmail()));
-        novoFuncionario.setNome(encrypt(funcionario.getNome()));
-        novoFuncionario.setTelefone(encrypt(funcionario.getTelefone()));
-    }
-
-    public String encrypt(String encryptedValue) {
-        return encryptor.encrypt(encryptedValue);
-    }
-
-    private void decryptFuncionarioFields(FuncionarioEntity funcionario) {
-        funcionario.setCpf(decrypt(funcionario.getCpf()));
-        funcionario.setEmail(decrypt(funcionario.getEmail()));
-        funcionario.setNome(decrypt(funcionario.getNome()));
-        funcionario.setTelefone(decrypt(funcionario.getTelefone()));
+        novoFuncionario.setCpf(encryptor.encrypt(funcionario.getCpf()));
+        novoFuncionario.setEmail(encryptor.encrypt(funcionario.getEmail()));
+        novoFuncionario.setNome(encryptor.encrypt(funcionario.getNome()));
+        novoFuncionario.setTelefone(encryptor.encrypt(funcionario.getTelefone()));
+        novoFuncionario.setSenha(encryptor.encrypt(funcionario.getSenha()));
+        novoFuncionario.setData_nascimento(encryptor.encrypt(funcionario.getData_nascimento()));
+        novoFuncionario.setSalario(encryptor.encrypt(funcionario.getSalario()));
+        novoFuncionario.setCargo(encryptor.encrypt(funcionario.getCargo()));
     }
 
     public String decrypt(String encryptedValue) {
-        return encryptor.encrypt(encryptedValue);
+        return encryptor.decrypt(encryptedValue);
     }
 }
