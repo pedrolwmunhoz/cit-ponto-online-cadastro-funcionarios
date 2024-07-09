@@ -1,4 +1,6 @@
-package com.cit.virtual_ponto.cadastro_funcionarios;import org.springframework.context.annotation.Bean;
+package com.cit.virtual_ponto.cadastro_funcionarios;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;

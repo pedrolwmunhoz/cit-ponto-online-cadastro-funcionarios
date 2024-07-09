@@ -38,7 +38,7 @@ public class CadastroFuncionariosService {
 
     @Transactional
     public FuncionarioEntity cadastrarFuncionario(FuncionarioDto funcionario) {
-
+        
         Long empresaId = funcionario.getEmpresaId();
         Optional<EmpresaEntity> optionalEmpresa = empresaRepository.findById(empresaId);
 

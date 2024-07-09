@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
+            String errorMessage = error.getDefaultMessage() + fieldName;
             errors.put(fieldName, errorMessage);
             logger.error("Campo: {}, Mensagem de erro: {}", fieldName, errorMessage);
         });
