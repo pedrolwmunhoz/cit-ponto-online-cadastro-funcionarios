@@ -22,9 +22,9 @@ Conteudo do arquivo .env
 
 | Nome da Env                 | Descrição do valor                               | Valor Padrão                                                        |
 |:----------------------------|:-------------------------------------------------|:--------------------------------------------------------------------|
-| SPRING_DATASOURCE_USERNAME | Nome do usuario de banco de dados                | "root"                                                        |
-| SPRING_DATASOURCE_PASSWORD | Senha do usuario de banco de dados               | "taSumwUsxFsg71uPmlmsFnu1Od47hQS2"                                                      |
-| SPRING_DATASOURCE_JDBC_URL | url de conexão do banco de dados                 | "jdbc:postgresql://dpg-cpp2n3g8fa8c73988ij0-a.oregon-postgres.render.com/virtualpontodb" |
+| SPRING_DATASOURCE_USERNAME | Nome do usuario de banco de dados                |                                                                      |
+| SPRING_DATASOURCE_PASSWORD | Senha do usuario de banco de dados               |                                                                      |
+| SPRING_DATASOURCE_JDBC_URL | url de conexão do banco de dados                 |                                                                      |
 
 
 Voce pode excutar o projeto com o comando **mvn spring-boot:run**, ao executar o Maven inicia a execução do projeto Spring Boot atual. Isso compila o projeto, resolve suas dependências, e inicia a aplicação Spring Boot incorporada, conforme configurado no arquivo pom.xml e na classe principal do aplicativo Spring Boot.
