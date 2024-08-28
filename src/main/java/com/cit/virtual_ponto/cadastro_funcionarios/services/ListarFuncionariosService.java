@@ -2,7 +2,7 @@ package com.cit.virtual_ponto.cadastro_funcionarios.services;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.EnumErrosCadastroFuncionario;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
-import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 
 import org.jasypt.encryption.StringEncryptor;
@@ -31,16 +31,16 @@ public class ListarFuncionariosService {
         this.cadastroFuncionariosRepository = cadastroFuncionariosRepository;
     }
 
-    public List<FuncionarioEntity> listarFuncionarios() {
-        List<FuncionarioEntity> funcionarios = cadastroFuncionariosRepository.findAll();
+    public List<PessoaFisica> listarFuncionarios() {
+        List<PessoaFisica> funcionarios = cadastroFuncionariosRepository.findAll();
         funcionarios.forEach(this::decryptFuncionarioFields);
         return funcionarios;
     }
 
-    public FuncionarioEntity buscarFuncionarioPorId(Long id) {
-        Optional<FuncionarioEntity> funcionario = cadastroFuncionariosRepository.findById(id);
+    public PessoaFisica buscarFuncionarioPorId(Long id) {
+        Optional<PessoaFisica> funcionario = cadastroFuncionariosRepository.findById(id);
         if (funcionario.isPresent()) {
-            FuncionarioEntity funcionarioExistente = funcionario.get();
+            PessoaFisica funcionarioExistente = funcionario.get();
             this.decryptFuncionarioFields(funcionarioExistente);
             return funcionarioExistente;
         } else {
@@ -49,24 +49,24 @@ public class ListarFuncionariosService {
         }
     }
 
-    public List<FuncionarioEntity> buscarFuncionariosPorNome(String nome) {
+    public List<PessoaFisica> buscarFuncionariosPorNome(String nome) {
 
-        List<FuncionarioEntity> funcionarios = cadastroFuncionariosRepository.findAll();
+        List<PessoaFisica> funcionarios = cadastroFuncionariosRepository.findAll();
         funcionarios.forEach(this::decryptFuncionarioFields);
 
-        List<FuncionarioEntity> funcionariosFiltrados = funcionarios.stream()
+        List<PessoaFisica> funcionariosFiltrados = funcionarios.stream()
         .filter(funcionario -> nome.equalsIgnoreCase(funcionario.getNome()))
         .collect(Collectors.toList());
         return funcionariosFiltrados;
     }
 
-    private void decryptFuncionarioFields(FuncionarioEntity funcionario) {
+    private void decryptFuncionarioFields(PessoaFisica funcionario) {
         funcionario.setCpf(decrypt(funcionario.getCpf()));
         funcionario.setEmail(decrypt(funcionario.getEmail()));
         funcionario.setNome(decrypt(funcionario.getNome()));
         funcionario.setSenha(decrypt(funcionario.getSenha()));
-        funcionario.setData_nascimento(decrypt(funcionario.getData_nascimento()));
-        funcionario.setSalario(decrypt(funcionario.getSalario()));
+        funcionario.setDataNascimento(decrypt(funcionario.getDataNascimento()));
+        funcionario.setSalario(funcionario.getSalario());
         funcionario.setCargo(decrypt(funcionario.getCargo()));
     }
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
-import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 
 @Service
@@ -25,15 +25,15 @@ public class ValidaLoginFuncionarioService {
     @Autowired
     private CadastroFuncionariosRepository cadastroFuncionariosRepository;
 
-    public FuncionarioEntity validarLogin(LoginRequestDto loginRequestDto) {
-        List<FuncionarioEntity> funcionarios = cadastroFuncionariosRepository.findAll();
+    public PessoaFisica validarLogin(LoginRequestDto loginRequestDto) {
+        List<PessoaFisica> funcionarios = cadastroFuncionariosRepository.findAll();
 
-        Optional<FuncionarioEntity> funcionarioOptional = funcionarios.stream()
+        Optional<PessoaFisica> funcionarioOptional = funcionarios.stream()
                 .filter(funcionario -> encryptor.decrypt(funcionario.getEmail()).equals(loginRequestDto.getEmail()))
                 .findFirst();
 
         if (funcionarioOptional.isPresent()) {
-            FuncionarioEntity funcionario = funcionarioOptional.get();
+            PessoaFisica funcionario = funcionarioOptional.get();
 
             String senhaDescriptografada = encryptor.decrypt(funcionario.getSenha());
 
@@ -46,13 +46,13 @@ public class ValidaLoginFuncionarioService {
     }
 
 
-    private void decryptFuncionarioFields(FuncionarioEntity funcionario) {
+    private void decryptFuncionarioFields(PessoaFisica funcionario) {
         funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
         funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
         funcionario.setNome(encryptor.decrypt(funcionario.getNome()));
         funcionario.setSenha(encryptor.decrypt(funcionario.getSenha()));
-        funcionario.setData_nascimento(encryptor.decrypt(funcionario.getData_nascimento()));
-        funcionario.setSalario(encryptor.decrypt(funcionario.getSalario()));
+        funcionario.setDataNascimento(encryptor.decrypt(funcionario.getDataNascimento()));
+        funcionario.setSalario(funcionario.getSalario());
         funcionario.setCargo(encryptor.decrypt(funcionario.getCargo()));
     }
 

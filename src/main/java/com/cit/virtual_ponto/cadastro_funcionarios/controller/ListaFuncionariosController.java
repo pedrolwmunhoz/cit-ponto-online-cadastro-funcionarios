@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/")
-@Validated
-public class CadastroFuncionariosController {
+public class ListaFuncionariosController {
 
     private final CadastroFuncionariosService funcionariosService;
     private final ListarFuncionariosService listarFuncionariosService;
@@ -30,37 +27,29 @@ public class CadastroFuncionariosController {
     
 
     @Autowired
-    public CadastroFuncionariosController(CadastroFuncionariosService funcionariosService,
-            ListarFuncionariosService listarFuncionariosService, ValidaLoginFuncionarioService validaLoginFuncionarioService) {
+    public ListaFuncionariosController(FuncionariosService funcionariosService,
+    ListarFuncionariosService listarFuncionariosService, ValidaLoginFuncionarioService validaLoginFuncionarioService) {
         this.funcionariosService = funcionariosService;
         this.listarFuncionariosService = listarFuncionariosService;
         this.validaLoginFuncionarioService = validaLoginFuncionarioService;
     }
-
-    @PostMapping("/cadastrar")
-    public ResponseEntity<PessoaFisica> cadastrarFuncionario(@RequestBody @Valid FuncionarioDto funcionarioDto ) {
-        PessoaFisica novoFuncionario = funcionariosService.cadastrarFuncionario(funcionarioDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoFuncionario);
+    
+    @GetMapping("/listar-funcionarios")
+    public ResponseEntity<List<PessoaFisica>> listarFuncionarios() {
+        List<PessoaFisica> funcionarios = listarFuncionariosService.listarFuncionarios();
+        return ResponseEntity.ok(funcionarios);
     }
 
-    @PutMapping("/atualizar")
-    public ResponseEntity<PessoaFisica> atualizarFuncionario(@RequestBody @Valid FuncionarioDto funcionario) {
-        PessoaFisica funcionarioAtualizado = funcionariosService.atualizarFuncionario(funcionario);
-        return ResponseEntity.status(HttpStatus.OK).body(funcionarioAtualizado);
+    @GetMapping("/buscar-nome")
+    public ResponseEntity<List<PessoaFisica>> buscarFuncionariosPorNome(
+            @RequestParam @NotBlank(message = "O nome não pode ser vazio") @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres") String nome) {
+        List<PessoaFisica> funcionarios = listarFuncionariosService.buscarFuncionariosPorNome(nome);
+        return ResponseEntity.ok(funcionarios);
     }
 
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Void> excluirFuncionario(
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<PessoaFisica> buscarFuncionarioPorId(
             @PathVariable @Min(value = 1, message = "O ID do funcionário deve ser um valor positivo") Long id) {
-        funcionariosService.excluirFuncionario(id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(listarFuncionariosService.buscarFuncionarioPorId(id));
     }
-
-
-
-    @PostMapping("/validar-login")
-    public ResponseEntity<PessoaFisica> validarLogin(@RequestBody @Valid LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(validaLoginFuncionarioService.validarLogin(loginRequestDto));
-    }
-
 }

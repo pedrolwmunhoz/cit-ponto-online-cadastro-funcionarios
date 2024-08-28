@@ -4,14 +4,14 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.cit.virtual_ponto.cadastro_funcionarios.models.FuncionarioEntity;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
 
-public interface CadastroFuncionariosRepository extends JpaRepository<FuncionarioEntity, Long> {
-    Optional<FuncionarioEntity> findByEmail(String email);
+public interface CadastroFuncionariosRepository extends JpaRepository<PessoaFisica, Long> {
+    Optional<PessoaFisica> findByEmail(String email);
 
-    Optional<FuncionarioEntity> findByCpf(String cpf);
+    Optional<PessoaFisica> findByCpf(String cpf);
 
-    Optional<FuncionarioEntity> findByTelefone(String telefone);
+    Optional<PessoaFisica> findByTelefone(String telefone);
 
-    Optional<FuncionarioEntity> findByNome(String nome);
+    Optional<PessoaFisica> findByNome(String nome);
 }
