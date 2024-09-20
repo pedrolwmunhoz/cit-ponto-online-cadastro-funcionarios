@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -19,7 +20,7 @@ public class JornadaTrabalhoEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_jornada_trabalho")
-    private Integer idConfiguracaoJornadaTrabalho;
+    private Integer idJornadaTrabalho;
 
     @Column(name = "geolocalizacaoPermitida")
     private String geolocalizacaoPermitida;
@@ -36,9 +37,7 @@ public class JornadaTrabalhoEntity implements Serializable {
     @Column(name = "intervalo_descanso")
     private LocalTime intervaloDescanso;
 
-    @OneToMany(mappedBy = "configuracaoJornadaTrabalho")
+    @JsonIgnore
+    @OneToMany(mappedBy = "jornadaTrabalho")
     private List<BancoHorasEntity> bancoHoras;
-
-    @OneToMany(mappedBy = "jornadaTrabalho", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PessoaFisica> funcionarios;
 }

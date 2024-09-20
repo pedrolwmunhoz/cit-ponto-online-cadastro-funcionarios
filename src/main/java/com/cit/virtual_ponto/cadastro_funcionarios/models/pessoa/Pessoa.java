@@ -11,16 +11,13 @@ public abstract class Pessoa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_pessoa", nullable = false)
+    @Column(name = "id_pessoa")
     private Integer idPessoa;
-
-    @Column(name = "nome", nullable = false)
-    private String nome;
 
     @Column(name = "email", nullable = false)
     private String email;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_login", nullable = false, unique = true)
     private Login login;
     

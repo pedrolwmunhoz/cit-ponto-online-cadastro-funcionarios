@@ -8,7 +8,7 @@ import java.time.LocalTime;
 @Data
 public class JornadaTrabalhoDto implements Serializable {
 
-    private Integer idConfiguracaoJornadaTrabalho;
+    private Integer idJornadaTrabalho;
 
     @NotBlank(message = "Geolocalização permitida não pode ser vazia")
     private String geolocalizacaoPermitida;

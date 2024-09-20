@@ -27,7 +27,5 @@ public class Departamento {
     @JoinColumn(name = "id_empresa", nullable = false, unique = true)
     private PessoaJuridica empresa;
 
-    @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PessoaFisica> funcionarios;
 }
 

@@ -26,8 +26,5 @@ public class Cargo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_empresa", nullable = false, unique = true)
     private PessoaJuridica empresa;
-
-    @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PessoaFisica> funcionarios;
     
 }

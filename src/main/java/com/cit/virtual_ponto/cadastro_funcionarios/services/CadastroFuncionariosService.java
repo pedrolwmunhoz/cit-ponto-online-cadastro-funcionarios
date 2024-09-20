@@ -13,8 +13,6 @@ import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaJuridica;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.Telefone;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.EmpresaRepository;
-import com.cit.virtual_ponto.cadastro_funcionarios.repositories.EnderecoRepository;
-import com.cit.virtual_ponto.cadastro_funcionarios.repositories.LoginRepository;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.TelefoneRepository;
 
 import jakarta.transaction.Transactional;
@@ -23,6 +21,8 @@ import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -31,8 +31,6 @@ public class CadastroFuncionariosService {
     private CadastroFuncionariosRepository cadastroFuncionariosRepository;
     private EmpresaRepository empresaRepository;
     private TelefoneRepository telefoneRepository;
-    private EnderecoRepository enderecoRepository;
-    private LoginRepository loginRepository;
 
     private StringEncryptor encryptor;
 
@@ -45,15 +43,11 @@ public class CadastroFuncionariosService {
     public CadastroFuncionariosService(
         CadastroFuncionariosRepository cadastroFuncionariosRepository, 
         EmpresaRepository empresaRepository,
-        TelefoneRepository telefoneRepository,
-        EnderecoRepository enderecoRepository,
-        LoginRepository loginRepository
+        TelefoneRepository telefoneRepository
     )   {
             this.cadastroFuncionariosRepository = cadastroFuncionariosRepository;
             this.empresaRepository = empresaRepository;
             this.telefoneRepository = telefoneRepository;
-            this.enderecoRepository = enderecoRepository;
-            this.loginRepository = loginRepository;
     }
 
     @Transactional
@@ -71,11 +65,7 @@ public class CadastroFuncionariosService {
         //criptografia e settDados
         this.setFuncionarioFields(novoFuncionario, funcionario);
 
-        // salva funcionario
-        loginRepository.save(novoFuncionario.getLogin());
-        telefoneRepository.save(novoFuncionario.getTelefone());
-        enderecoRepository.save(novoFuncionario.getEndereco());
-        
+        // //salva funcionario
         return cadastroFuncionariosRepository.save(novoFuncionario);
 
     }
@@ -131,7 +121,7 @@ public class CadastroFuncionariosService {
         }
 
         // Verifica se o email já está cadastrado
-        String email = funcionario.getEmail();
+        String email = encryptor.encrypt(funcionario.getEmail());
         Optional<PessoaFisica> optionalFuncionarioByEmail = cadastroFuncionariosRepository.findByEmail(email);
         if (optionalFuncionarioByEmail.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
@@ -139,7 +129,7 @@ public class CadastroFuncionariosService {
         }
 
         // Verifica se o nome já está cadastrado
-        String nome = funcionario.getNome();
+        String nome = encryptor.encrypt(funcionario.getNome());
         Optional<PessoaFisica> optionalFuncionarioByNome = cadastroFuncionariosRepository.findByNome(nome);
         if (optionalFuncionarioByNome.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
@@ -147,7 +137,7 @@ public class CadastroFuncionariosService {
         }
 
         // Verifica se o RG já está cadastrado
-        String rg = funcionario.getRg();
+        String rg = encryptor.encrypt(funcionario.getRg());
         Optional<PessoaFisica> optionalFuncionarioByRG = cadastroFuncionariosRepository.findByRg(rg);
         if (optionalFuncionarioByRG.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
@@ -155,7 +145,7 @@ public class CadastroFuncionariosService {
         }
 
         // Verifica se o CPF já está cadastrado
-        String cpf = funcionario.getCpf();
+        String cpf = encryptor.encrypt(funcionario.getCpf());
         Optional<PessoaFisica> optionalFuncionarioByCpf = cadastroFuncionariosRepository.findByCpf(cpf);
         if (optionalFuncionarioByCpf.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
@@ -181,6 +171,7 @@ public class CadastroFuncionariosService {
         novoFuncionario.setCpf(encryptor.encrypt(funcionario.getCpf()));
         novoFuncionario.setDataNascimento(encryptor.encrypt(funcionario.getDataNascimento()));
         novoFuncionario.setEmail(encryptor.encrypt(funcionario.getEmail()));
+
         
         //folha pagamento
         FolhaPagamento folhaPagamento = new FolhaPagamento();
@@ -189,20 +180,21 @@ public class CadastroFuncionariosService {
         folhaPagamento.setNumeroFilhos(funcionario.getFolhaPagamento().getNumeroFilhos());
         folhaPagamento.setSalario(funcionario.getFolhaPagamento().getSalario());
         novoFuncionario.setFolhaPagamento(folhaPagamento);
-        
+
         //banco horas - departamento - cargo
         novoFuncionario.setBancoHoras(new BancoHorasEntity());
+        novoFuncionario.getBancoHoras().setDataInicioApuracao(new Date());
+        novoFuncionario.getBancoHoras().setIdSaldoHoras(6);
         novoFuncionario.setIdDepartamento(funcionario.getIdDepartamento());
         novoFuncionario.setIdCargo(funcionario.getIdCargo());
 
         //jornadaTrabalho
-        JornadaTrabalhoEntity jornadaTrabalho = new JornadaTrabalhoEntity();
-        jornadaTrabalho.setGeolocalizacaoPermitida(funcionario.getJornadaTrabalho().getGeolocalizacaoPermitida());
-        jornadaTrabalho.setJornadaTrabalhoHoras(funcionario.getJornadaTrabalho().getJornadaTrabalhoHoras());
-        jornadaTrabalho.setHorarioEntrada(funcionario.getJornadaTrabalho().getHorarioEntrada());
-        jornadaTrabalho.setHorarioSaida(funcionario.getJornadaTrabalho().getHorarioSaida());
-        jornadaTrabalho.setIntervaloDescanso(funcionario.getJornadaTrabalho().getIntervaloDescanso());
-        novoFuncionario.getBancoHoras().setJornadaTrabalho(jornadaTrabalho);
+        novoFuncionario.getBancoHoras().setJornadaTrabalho(new JornadaTrabalhoEntity());
+        novoFuncionario.getBancoHoras().getJornadaTrabalho().setGeolocalizacaoPermitida(funcionario.getJornadaTrabalho().getGeolocalizacaoPermitida());
+        novoFuncionario.getBancoHoras().getJornadaTrabalho().setJornadaTrabalhoHoras(funcionario.getJornadaTrabalho().getJornadaTrabalhoHoras());
+        novoFuncionario.getBancoHoras().getJornadaTrabalho().setHorarioEntrada(funcionario.getJornadaTrabalho().getHorarioEntrada());
+        novoFuncionario.getBancoHoras().getJornadaTrabalho().setHorarioSaida(funcionario.getJornadaTrabalho().getHorarioSaida());
+        novoFuncionario.getBancoHoras().getJornadaTrabalho().setIntervaloDescanso(funcionario.getJornadaTrabalho().getIntervaloDescanso());
 
         //Telefone
         novoFuncionario.setTelefone(new Telefone());
@@ -212,7 +204,7 @@ public class CadastroFuncionariosService {
         //Login
         novoFuncionario.setLogin(new Login()); 
         novoFuncionario.getLogin().setSenhaUsuario(encryptor.encrypt(funcionario.getSenha()));
-        novoFuncionario.getLogin().setEmail(encryptor.encrypt(funcionario.getSenha()));
+        novoFuncionario.getLogin().setEmail(encryptor.encrypt(funcionario.getEmail()));
     
         //endereco
         novoFuncionario.setEndereco(new Endereco());
@@ -226,7 +218,6 @@ public class CadastroFuncionariosService {
 
     }
     
-
     public String decrypt(String encryptedValue) {
         return encryptor.decrypt(encryptedValue);
     }
