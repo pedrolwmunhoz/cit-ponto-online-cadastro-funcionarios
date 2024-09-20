@@ -6,6 +6,7 @@ import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.banco_horas.BancoHorasEntity;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.banco_horas.FolhaPagamento;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.banco_horas.JornadaTrabalhoEntity;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.banco_horas.SaldoHorasEntity;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.Endereco;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.Login;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
@@ -187,6 +188,9 @@ public class CadastroFuncionariosService {
         novoFuncionario.getBancoHoras().setIdSaldoHoras(6);
         novoFuncionario.setIdDepartamento(funcionario.getIdDepartamento());
         novoFuncionario.setIdCargo(funcionario.getIdCargo());
+
+        // saldoHoras
+        novoFuncionario.getBancoHoras().setSaldoHoras(new SaldoHorasEntity());
 
         //jornadaTrabalho
         novoFuncionario.getBancoHoras().setJornadaTrabalho(new JornadaTrabalhoEntity());
