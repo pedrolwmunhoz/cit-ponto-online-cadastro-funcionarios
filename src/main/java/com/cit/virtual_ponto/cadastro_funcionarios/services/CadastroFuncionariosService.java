@@ -172,7 +172,6 @@ public class CadastroFuncionariosService {
         novoFuncionario.setCpf(encryptor.encrypt(funcionario.getCpf()));
         novoFuncionario.setDataNascimento(encryptor.encrypt(funcionario.getDataNascimento()));
         novoFuncionario.setEmail(encryptor.encrypt(funcionario.getEmail()));
-
         
         //folha pagamento
         FolhaPagamento folhaPagamento = new FolhaPagamento();
@@ -185,7 +184,6 @@ public class CadastroFuncionariosService {
         //banco horas - departamento - cargo
         novoFuncionario.setBancoHoras(new BancoHorasEntity());
         novoFuncionario.getBancoHoras().setDataInicioApuracao(new Date());
-        novoFuncionario.getBancoHoras().setIdSaldoHoras(6);
         novoFuncionario.setIdDepartamento(funcionario.getIdDepartamento());
         novoFuncionario.setIdCargo(funcionario.getIdCargo());
 

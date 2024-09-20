@@ -21,9 +21,6 @@ public class BancoHorasEntity implements Serializable {
     @Column(name = "id_banco_horas")
     private Integer idBancoHoras;
 
-    @Column(name = "id_saldo_horas", nullable = false, unique = true)
-    private Integer idSaldoHoras;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_saldo_horas", unique = true)
     private SaldoHorasEntity saldoHoras;
