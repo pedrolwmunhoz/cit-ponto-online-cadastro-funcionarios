@@ -4,14 +4,17 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 
-public interface CadastroFuncionariosRepository extends JpaRepository<PessoaFisica, Long> {
-    Optional<PessoaFisica> findByEmail(String email);
+public interface CadastroFuncionariosRepository extends JpaRepository<PessoaFisica, Integer> {
+   
+    Optional<PessoaFisica> findByNome(String nome);
 
     Optional<PessoaFisica> findByCpf(String cpf);
 
-    Optional<PessoaFisica> findByTelefone(String telefone);
+    Optional<PessoaFisica> findByRg(String rg);
 
-    Optional<PessoaFisica> findByNome(String nome);
+    Optional<PessoaFisica> findByEmail(String email);
+
+
 }

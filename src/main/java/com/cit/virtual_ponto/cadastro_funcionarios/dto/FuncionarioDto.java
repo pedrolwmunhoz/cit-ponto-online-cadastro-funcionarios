@@ -3,19 +3,12 @@ package com.cit.virtual_ponto.cadastro_funcionarios.dto;
 import lombok.Data;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
 
 @Data
 public class FuncionarioDto extends PessoaDto {
 
-    @NotNull(message = "Empresa ID não pode ser nulo")
-    private Long empresaId;
-
-    private Long departamentoId;
+    @NotNull(message = "Funcionario ID não pode ser nulo")
+    private Integer idFuncionario;
 
     @NotBlank(message = "CPF não pode ser vazio")
     @Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos numéricos")
@@ -28,32 +21,25 @@ public class FuncionarioDto extends PessoaDto {
     @NotNull(message = "Data de nascimento não pode ser nula")
     private String dataNascimento;
 
-    @NotNull(message = "Data de admissão não pode ser nula")
-    private LocalDate dataAdmissao;
+    @NotBlank(message = "ID empresa não pode ser vazio")
+    private Integer idEmpresa;
 
-    @NotBlank(message = "Cargo não pode ser vazio")
-    private String cargo;
+    @NotBlank(message = "ID departamento não pode ser vazio")
+    private Integer idDepartamento;
 
-    @NotNull(message = "Jornada de trabalho não pode ser nula")
-    private Integer jornadaTrabalho; // Em horas
+    @NotBlank(message = "ID cargo não pode ser vazio")
+    private Integer idCargo;
 
-    private LocalTime horarioEntrada;
+    // @NotNull(message = "ID folha pagamento não pode ser nula")
+    // private Integer idFolhaPagamento;
 
-    private LocalTime horarioSaida;
+    // @NotBlank(message = "ID jornada trabalho não pode ser vazio")
+    // private Integer idJornada_trabalho;
 
-    @NotBlank(message = "Tipo de contrato não pode ser vazio")
-    private String tipoContrato;
+    // @NotBlank(message = "ID banco de horas não pode ser vazio")
+    // private Integer idBancoHoras;
 
-    @NotNull(message = "Salário não pode ser nulo")
-    private BigDecimal salario;
+    private @Valid JornadaTrabalhoDto jornadaTrabalho;
 
-    private LocalTime intervaloDescanso;
-
-    @NotBlank(message = "Matrícula não pode ser vazia")
-    private String matricula;
-
-    private String situacao;
-
-    private @Valid EnderecoDto endereco;
-
+    private @Valid FolhaPagamentoDto folhaPagamento;
 }

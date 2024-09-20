@@ -1,4 +1,4 @@
-package com.cit.virtual_ponto.cadastro_funcionarios.models;
+package com.cit.virtual_ponto.cadastro_funcionarios;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.context.annotation.Bean;

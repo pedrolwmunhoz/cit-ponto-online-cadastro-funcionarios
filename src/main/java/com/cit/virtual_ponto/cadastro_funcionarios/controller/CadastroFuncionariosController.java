@@ -2,9 +2,8 @@ package com.cit.virtual_ponto.cadastro_funcionarios.controller;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.FuncionarioDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
-import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.services.CadastroFuncionariosService;
-import com.cit.virtual_ponto.cadastro_funcionarios.services.ListarFuncionariosService;
 import com.cit.virtual_ponto.cadastro_funcionarios.services.ValidaLoginFuncionarioService;
 
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -25,15 +23,12 @@ import java.util.List;
 public class CadastroFuncionariosController {
 
     private final CadastroFuncionariosService funcionariosService;
-    private final ListarFuncionariosService listarFuncionariosService;
     private final ValidaLoginFuncionarioService validaLoginFuncionarioService;
     
 
     @Autowired
-    public CadastroFuncionariosController(CadastroFuncionariosService funcionariosService,
-            ListarFuncionariosService listarFuncionariosService, ValidaLoginFuncionarioService validaLoginFuncionarioService) {
+    public CadastroFuncionariosController(CadastroFuncionariosService funcionariosService, ValidaLoginFuncionarioService validaLoginFuncionarioService) {
         this.funcionariosService = funcionariosService;
-        this.listarFuncionariosService = listarFuncionariosService;
         this.validaLoginFuncionarioService = validaLoginFuncionarioService;
     }
 
@@ -51,12 +46,10 @@ public class CadastroFuncionariosController {
 
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity<Void> excluirFuncionario(
-            @PathVariable @Min(value = 1, message = "O ID do funcionário deve ser um valor positivo") Long id) {
+            @PathVariable @Min(value = 1, message = "O ID do funcionário deve ser um valor positivo") Integer id) {
         funcionariosService.excluirFuncionario(id);
         return ResponseEntity.ok(null);
     }
-
-
 
     @PostMapping("/validar-login")
     public ResponseEntity<PessoaFisica> validarLogin(@RequestBody @Valid LoginRequestDto loginRequestDto) {

@@ -1,8 +1,11 @@
-package com.cit.virtual_ponto.cadastro_funcionarios.models;
+package com.cit.virtual_ponto.cadastro_funcionarios.models.configuracao_setor;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaJuridica;
 
 @Data
 @Entity
@@ -11,8 +14,8 @@ public class Departamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "departamento_id")
-    private Long id;
+    @Column(name = "id_departamento")
+    private Integer idDepartamento;
 
     @Column(name = "nome", nullable = false)
     private String nome;
@@ -21,7 +24,7 @@ public class Departamento {
     private String descricao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresa_id", nullable = false)
+    @JoinColumn(name = "id_empresa", nullable = false, unique = true)
     private PessoaJuridica empresa;
 
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,0 +1,21 @@
+package com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "telefone")
+public class Telefone {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_telefone", nullable = false)
+    private Integer idTelefone;
+
+    @Column(name = "ddd", nullable = false)
+    private String ddd;
+
+    @Column(name = "numero", nullable = false, unique = true)
+    private String numero;
+}

@@ -2,7 +2,7 @@ package com.cit.virtual_ponto.cadastro_funcionarios.services;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.EnumErrosCadastroFuncionario;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
-import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 
 import org.jasypt.encryption.StringEncryptor;
@@ -37,7 +37,7 @@ public class ListarFuncionariosService {
         return funcionarios;
     }
 
-    public PessoaFisica buscarFuncionarioPorId(Long id) {
+    public PessoaFisica buscarFuncionarioPorId(Integer id) {
         Optional<PessoaFisica> funcionario = cadastroFuncionariosRepository.findById(id);
         if (funcionario.isPresent()) {
             PessoaFisica funcionarioExistente = funcionario.get();
@@ -61,16 +61,29 @@ public class ListarFuncionariosService {
     }
 
     private void decryptFuncionarioFields(PessoaFisica funcionario) {
-        funcionario.setCpf(decrypt(funcionario.getCpf()));
-        funcionario.setEmail(decrypt(funcionario.getEmail()));
-        funcionario.setNome(decrypt(funcionario.getNome()));
-        funcionario.setSenha(decrypt(funcionario.getSenha()));
-        funcionario.setDataNascimento(decrypt(funcionario.getDataNascimento()));
-        funcionario.setSalario(funcionario.getSalario());
-        funcionario.setCargo(decrypt(funcionario.getCargo()));
-    }
+        
+        //Nome - RG cpf - dataNascimento - email
+        funcionario.setNome(encryptor.decrypt(funcionario.getNome()));
+        funcionario.setRg(encryptor.decrypt(funcionario.getRg()));
+        funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
+        funcionario.setDataNascimento(encryptor.decrypt(funcionario.getDataNascimento()));
+        funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
 
-    public String decrypt(String encryptedValue) {
-        return encryptor.decrypt(encryptedValue);
+        //Telefone
+        funcionario.getTelefone().setDdd(encryptor.decrypt(funcionario.getTelefone().getDdd()));
+        funcionario.getTelefone().setNumero(encryptor.decrypt(funcionario.getTelefone().getNumero()));
+        
+        //Login
+        funcionario.getLogin().setSenhaUsuario(encryptor.decrypt(funcionario.getLogin().getSenhaUsuario()));
+        funcionario.getLogin().setEmail(encryptor.decrypt(funcionario.getLogin().getEmail()));
+    
+        //endereco
+        funcionario.getEndereco().setLogradouro(encryptor.decrypt(funcionario.getEndereco().getLogradouro()));
+        funcionario.getEndereco().setNumero(encryptor.decrypt(funcionario.getEndereco().getNumero()));
+        funcionario.getEndereco().setComplemento(encryptor.decrypt(funcionario.getEndereco().getComplemento()));
+        funcionario.getEndereco().setBairro(encryptor.decrypt(funcionario.getEndereco().getBairro()));
+        funcionario.getEndereco().setCidade(encryptor.decrypt(funcionario.getEndereco().getCidade()));
+        funcionario.getEndereco().setEstado(encryptor.decrypt(funcionario.getEndereco().getEstado()));
+        funcionario.getEndereco().setCep(encryptor.decrypt(funcionario.getEndereco().getCep()));
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
-import com.cit.virtual_ponto.cadastro_funcionarios.models.PessoaFisica;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 
 @Service
@@ -35,7 +35,7 @@ public class ValidaLoginFuncionarioService {
         if (funcionarioOptional.isPresent()) {
             PessoaFisica funcionario = funcionarioOptional.get();
 
-            String senhaDescriptografada = encryptor.decrypt(funcionario.getSenha());
+            String senhaDescriptografada = encryptor.decrypt(funcionario.getLogin().getSenhaUsuario());
 
             if (senhaDescriptografada.equals(loginRequestDto.getSenha())) {
                 this.decryptFuncionarioFields(funcionario);
@@ -45,15 +45,31 @@ public class ValidaLoginFuncionarioService {
         throw new ErrosSistema.FuncionarioException("Credenciais inválidas.");
     }
 
-
     private void decryptFuncionarioFields(PessoaFisica funcionario) {
-        funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
-        funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
+        
+        //Nome - RG cpf - dataNascimento - email
         funcionario.setNome(encryptor.decrypt(funcionario.getNome()));
-        funcionario.setSenha(encryptor.decrypt(funcionario.getSenha()));
+        funcionario.setRg(encryptor.decrypt(funcionario.getRg()));
+        funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
         funcionario.setDataNascimento(encryptor.decrypt(funcionario.getDataNascimento()));
-        funcionario.setSalario(funcionario.getSalario());
-        funcionario.setCargo(encryptor.decrypt(funcionario.getCargo()));
+        funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
+
+        //Telefone
+        funcionario.getTelefone().setDdd(encryptor.decrypt(funcionario.getTelefone().getDdd()));
+        funcionario.getTelefone().setNumero(encryptor.decrypt(funcionario.getTelefone().getNumero()));
+        
+        //Login
+        funcionario.getLogin().setSenhaUsuario(encryptor.decrypt(funcionario.getLogin().getSenhaUsuario()));
+        funcionario.getLogin().setEmail(encryptor.decrypt(funcionario.getLogin().getEmail()));
+    
+        //endereco
+        funcionario.getEndereco().setLogradouro(encryptor.decrypt(funcionario.getEndereco().getLogradouro()));
+        funcionario.getEndereco().setNumero(encryptor.decrypt(funcionario.getEndereco().getNumero()));
+        funcionario.getEndereco().setComplemento(encryptor.decrypt(funcionario.getEndereco().getComplemento()));
+        funcionario.getEndereco().setBairro(encryptor.decrypt(funcionario.getEndereco().getBairro()));
+        funcionario.getEndereco().setCidade(encryptor.decrypt(funcionario.getEndereco().getCidade()));
+        funcionario.getEndereco().setEstado(encryptor.decrypt(funcionario.getEndereco().getEstado()));
+        funcionario.getEndereco().setCep(encryptor.decrypt(funcionario.getEndereco().getCep()));
     }
 
 }
