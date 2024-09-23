@@ -1,6 +1,5 @@
 package com.cit.virtual_ponto.cadastro_funcionarios.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.jasypt.encryption.StringEncryptor;
@@ -10,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.exceptions.ErrosSistema;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.Login;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
+import com.cit.virtual_ponto.cadastro_funcionarios.repositories.LoginRepository;
 
 @Service
 public class ValidaLoginFuncionarioService {
@@ -23,53 +24,54 @@ public class ValidaLoginFuncionarioService {
         this.encryptor = encryptor;
     }
     @Autowired
+    private LoginRepository loginRepository;
+
+    @Autowired
     private CadastroFuncionariosRepository cadastroFuncionariosRepository;
 
+    @Autowired
+    private HashService hashService;
+
     public PessoaFisica validarLogin(LoginRequestDto loginRequestDto) {
-        List<PessoaFisica> funcionarios = cadastroFuncionariosRepository.findAll();
+        Optional<Login> loginOptional = loginRepository.findByHashEmail(hashService.generateHash(loginRequestDto.getEmail()));
 
-        Optional<PessoaFisica> funcionarioOptional = funcionarios.stream()
-                .filter(funcionario -> encryptor.decrypt(funcionario.getEmail()).equals(loginRequestDto.getEmail()))
-                .findFirst();
+        if (loginOptional.isPresent()) {
+            Login login = loginOptional.get();
 
-        if (funcionarioOptional.isPresent()) {
-            PessoaFisica funcionario = funcionarioOptional.get();
-
-            String senhaDescriptografada = encryptor.decrypt(funcionario.getLogin().getSenhaUsuario());
+            String senhaDescriptografada = encryptor.decrypt(login.getSenhaUsuario());
 
             if (senhaDescriptografada.equals(loginRequestDto.getSenha())) {
-                this.decryptFuncionarioFields(funcionario);
-                return funcionario; 
+                PessoaFisica pessoa = cadastroFuncionariosRepository.getReferenceById(login.getIdLogin());
+                this.decryptFuncionarioFields(pessoa);
+                return pessoa;
             }
         }
         throw new ErrosSistema.FuncionarioException("Credenciais inválidas.");
     }
 
-    private void decryptFuncionarioFields(PessoaFisica funcionario) {
+    private void decryptFuncionarioFields(PessoaFisica pessoa) {
         
         //Nome - RG cpf - dataNascimento - email
-        funcionario.setNome(encryptor.decrypt(funcionario.getNome()));
-        funcionario.setRg(encryptor.decrypt(funcionario.getRg()));
-        funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
-        funcionario.setDataNascimento(encryptor.decrypt(funcionario.getDataNascimento()));
-        funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
-
+        pessoa.setNome(encryptor.decrypt(pessoa.getNome()));
+        pessoa.setRg(encryptor.decrypt(pessoa.getRg()));
+        pessoa.setCpf(encryptor.decrypt(pessoa.getCpf()));
+        pessoa.setDataNascimento(encryptor.decrypt(pessoa.getDataNascimento()));
         //Telefone
-        funcionario.getTelefone().setDdd(encryptor.decrypt(funcionario.getTelefone().getDdd()));
-        funcionario.getTelefone().setNumero(encryptor.decrypt(funcionario.getTelefone().getNumero()));
+        pessoa.getTelefone().setDdd(encryptor.decrypt(pessoa.getTelefone().getDdd()));
+        pessoa.getTelefone().setNumero(encryptor.decrypt(pessoa.getTelefone().getNumero()));
         
         //Login
-        funcionario.getLogin().setSenhaUsuario(encryptor.decrypt(funcionario.getLogin().getSenhaUsuario()));
-        funcionario.getLogin().setEmail(encryptor.decrypt(funcionario.getLogin().getEmail()));
+        pessoa.getLogin().setSenhaUsuario(encryptor.decrypt( pessoa.getLogin().getSenhaUsuario()));
+        pessoa.getLogin().setEmail(encryptor.decrypt( pessoa.getLogin().getEmail()));
     
         //endereco
-        funcionario.getEndereco().setLogradouro(encryptor.decrypt(funcionario.getEndereco().getLogradouro()));
-        funcionario.getEndereco().setNumero(encryptor.decrypt(funcionario.getEndereco().getNumero()));
-        funcionario.getEndereco().setComplemento(encryptor.decrypt(funcionario.getEndereco().getComplemento()));
-        funcionario.getEndereco().setBairro(encryptor.decrypt(funcionario.getEndereco().getBairro()));
-        funcionario.getEndereco().setCidade(encryptor.decrypt(funcionario.getEndereco().getCidade()));
-        funcionario.getEndereco().setEstado(encryptor.decrypt(funcionario.getEndereco().getEstado()));
-        funcionario.getEndereco().setCep(encryptor.decrypt(funcionario.getEndereco().getCep()));
+        pessoa.getEndereco().setLogradouro(encryptor.decrypt(pessoa.getEndereco().getLogradouro()));
+        pessoa.getEndereco().setNumero(encryptor.decrypt(pessoa.getEndereco().getNumero()));
+        pessoa.getEndereco().setComplemento(encryptor.decrypt(pessoa.getEndereco().getComplemento()));
+        pessoa.getEndereco().setBairro(encryptor.decrypt(pessoa.getEndereco().getBairro()));
+        pessoa.getEndereco().setCidade(encryptor.decrypt(pessoa.getEndereco().getCidade()));
+        pessoa.getEndereco().setEstado(encryptor.decrypt(pessoa.getEndereco().getEstado()));
+        pessoa.getEndereco().setCep(encryptor.decrypt(pessoa.getEndereco().getCep()));
     }
 
 }

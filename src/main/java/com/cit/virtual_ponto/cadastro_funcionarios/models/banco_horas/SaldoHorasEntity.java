@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "saldo_horas")
@@ -26,6 +28,7 @@ public class SaldoHorasEntity implements Serializable {
     @Column(name = "saldo_horas_extras")
     private String saldoHorasExtras;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "saldoHoras")
     private List<BancoHorasEntity> bancoHoras;
     

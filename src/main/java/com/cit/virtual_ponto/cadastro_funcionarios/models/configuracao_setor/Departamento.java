@@ -2,9 +2,6 @@ package com.cit.virtual_ponto.cadastro_funcionarios.models.configuracao_setor;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
-
-import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaJuridica;
 
 @Data

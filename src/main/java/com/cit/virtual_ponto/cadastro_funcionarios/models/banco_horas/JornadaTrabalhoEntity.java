@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.List;
-
-import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 

@@ -50,16 +50,24 @@ public class ListarFuncionariosService {
     }
 
     public List<PessoaFisica> buscarFuncionariosPorNome(String nome) {
-
+        // Remove espaços em branco do início e do fim do nome de pesquisa
+        String nomePesquisa = nome.trim().toLowerCase();
+    
+        // Obtém todos os funcionários
         List<PessoaFisica> funcionarios = cadastroFuncionariosRepository.findAll();
+    
+        // Descriptografa os campos dos funcionários
         funcionarios.forEach(this::decryptFuncionarioFields);
-
+    
+        // Filtra funcionários cujo nome comece com a string de pesquisa
         List<PessoaFisica> funcionariosFiltrados = funcionarios.stream()
-        .filter(funcionario -> nome.equalsIgnoreCase(funcionario.getNome()))
-        .collect(Collectors.toList());
+            .filter(funcionario -> funcionario.getNome().trim().toLowerCase().startsWith(nomePesquisa))
+            .collect(Collectors.toList());
+    
         return funcionariosFiltrados;
     }
-
+    
+    
     private void decryptFuncionarioFields(PessoaFisica funcionario) {
         
         //Nome - RG cpf - dataNascimento - email
@@ -67,7 +75,6 @@ public class ListarFuncionariosService {
         funcionario.setRg(encryptor.decrypt(funcionario.getRg()));
         funcionario.setCpf(encryptor.decrypt(funcionario.getCpf()));
         funcionario.setDataNascimento(encryptor.decrypt(funcionario.getDataNascimento()));
-        funcionario.setEmail(encryptor.decrypt(funcionario.getEmail()));
 
         //Telefone
         funcionario.getTelefone().setDdd(encryptor.decrypt(funcionario.getTelefone().getDdd()));

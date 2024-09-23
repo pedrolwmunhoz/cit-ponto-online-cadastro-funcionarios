@@ -1,7 +1,4 @@
 package com.cit.virtual_ponto.cadastro_funcionarios.models.configuracao_setor;
-import java.util.List;
-
-import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaJuridica;
 
 import jakarta.persistence.*;

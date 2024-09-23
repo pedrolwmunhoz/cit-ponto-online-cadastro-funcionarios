@@ -8,13 +8,9 @@ import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 
 public interface CadastroFuncionariosRepository extends JpaRepository<PessoaFisica, Integer> {
    
-    Optional<PessoaFisica> findByNome(String nome);
+    Optional<PessoaFisica> findByHashNome(String hashNome);
 
-    Optional<PessoaFisica> findByCpf(String cpf);
+    Optional<PessoaFisica> findByHashCpf(String hashCpf);
 
-    Optional<PessoaFisica> findByRg(String rg);
-
-    Optional<PessoaFisica> findByEmail(String email);
-
-
+    Optional<PessoaFisica> findByHashRg(String hashRg);
 }

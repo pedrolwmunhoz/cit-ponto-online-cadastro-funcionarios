@@ -7,6 +7,7 @@ import com.cit.virtual_ponto.cadastro_funcionarios.dto.JornadaTrabalhoDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.LoginRequestDto;
 import com.cit.virtual_ponto.cadastro_funcionarios.dto.TelefoneDto;
+import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.Login;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaFisica;
 import com.cit.virtual_ponto.cadastro_funcionarios.services.CadastroFuncionariosService;
 import com.cit.virtual_ponto.cadastro_funcionarios.services.ValidaLoginFuncionarioService;
@@ -61,19 +62,18 @@ public class CadastroFuncionariosController {
         novoFuncionario.setNome("Pedro Munhoz");
         novoFuncionario.setIdDepartamento(1);
         novoFuncionario.setIdCargo(1);
-        novoFuncionario.setEmail("empresa@example.com");
-        novoFuncionario.setEmail("empresa@example.com");
+        novoFuncionario.setEmail("funcionario@example.com");
         novoFuncionario.setSenha("senha123");
 
         // Configuração do telefone
         TelefoneDto telefone = new TelefoneDto();
         telefone.setDdd("11");
-        telefone.setNumero("987654321");
+        telefone.setNumero("9987654321");
         novoFuncionario.setTelefone(telefone);
 
         // Configuração do login
         LoginDto login = new LoginDto();
-        login.setEmail("empresa@example.com");
+        login.setEmail("funcionario@example.com");
         login.setSenha("senha123");
         novoFuncionario.setLogin(login);
 

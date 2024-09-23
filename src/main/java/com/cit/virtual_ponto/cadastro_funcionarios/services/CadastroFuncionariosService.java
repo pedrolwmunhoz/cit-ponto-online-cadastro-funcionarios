@@ -14,6 +14,7 @@ import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.PessoaJuridica;
 import com.cit.virtual_ponto.cadastro_funcionarios.models.pessoa.Telefone;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.CadastroFuncionariosRepository;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.EmpresaRepository;
+import com.cit.virtual_ponto.cadastro_funcionarios.repositories.LoginRepository;
 import com.cit.virtual_ponto.cadastro_funcionarios.repositories.TelefoneRepository;
 
 import jakarta.transaction.Transactional;
@@ -32,6 +33,8 @@ public class CadastroFuncionariosService {
     private CadastroFuncionariosRepository cadastroFuncionariosRepository;
     private EmpresaRepository empresaRepository;
     private TelefoneRepository telefoneRepository;
+    private LoginRepository loginRepository;
+    private HashService hashService;
 
     private StringEncryptor encryptor;
 
@@ -44,11 +47,15 @@ public class CadastroFuncionariosService {
     public CadastroFuncionariosService(
         CadastroFuncionariosRepository cadastroFuncionariosRepository, 
         EmpresaRepository empresaRepository,
-        TelefoneRepository telefoneRepository
+        TelefoneRepository telefoneRepository,
+        HashService hashService,
+        LoginRepository loginRepository
     )   {
             this.cadastroFuncionariosRepository = cadastroFuncionariosRepository;
             this.empresaRepository = empresaRepository;
             this.telefoneRepository = telefoneRepository;
+            this.hashService = hashService;
+            this.loginRepository = loginRepository;
     }
 
     @Transactional
@@ -122,42 +129,42 @@ public class CadastroFuncionariosService {
         }
 
         // Verifica se o email já está cadastrado
-        String email = encryptor.encrypt(funcionario.getEmail());
-        Optional<PessoaFisica> optionalFuncionarioByEmail = cadastroFuncionariosRepository.findByEmail(email);
-        if (optionalFuncionarioByEmail.isPresent()) {
+        String email = funcionario.getEmail();
+        Optional<Login> optionalLoginByEmail = loginRepository.findByHashEmail(hashService.generateHash(email));
+        if (optionalLoginByEmail.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
                     "Email já cadastrado");
         }
 
         // Verifica se o nome já está cadastrado
-        String nome = encryptor.encrypt(funcionario.getNome());
-        Optional<PessoaFisica> optionalFuncionarioByNome = cadastroFuncionariosRepository.findByNome(nome);
+        String nome = funcionario.getNome();
+        Optional<PessoaFisica> optionalFuncionarioByNome = cadastroFuncionariosRepository.findByHashNome(hashService.generateHash(nome));
         if (optionalFuncionarioByNome.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
                     "Nome já cadastrado");
         }
 
         // Verifica se o RG já está cadastrado
-        String rg = encryptor.encrypt(funcionario.getRg());
-        Optional<PessoaFisica> optionalFuncionarioByRG = cadastroFuncionariosRepository.findByRg(rg);
+        String rg = funcionario.getRg();
+        Optional<PessoaFisica> optionalFuncionarioByRG = cadastroFuncionariosRepository.findByHashRg(hashService.generateHash(rg));
         if (optionalFuncionarioByRG.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
                     "RG já cadastrado");
         }
 
         // Verifica se o CPF já está cadastrado
-        String cpf = encryptor.encrypt(funcionario.getCpf());
-        Optional<PessoaFisica> optionalFuncionarioByCpf = cadastroFuncionariosRepository.findByCpf(cpf);
+        String cpf = funcionario.getCpf();
+        Optional<PessoaFisica> optionalFuncionarioByCpf = cadastroFuncionariosRepository.findByHashCpf(hashService.generateHash(cpf));
         if (optionalFuncionarioByCpf.isPresent()) {
             throw new ErrosSistema.FuncionarioException(
                     "CPF já cadastrado");
         }
 
         // Verifica se o telefone já está cadastrado
-        String ddd = encryptor.encrypt(funcionario.getTelefone().getDdd());
-        String telefone = encryptor.encrypt(funcionario.getTelefone().getNumero());
+        String ddd = funcionario.getTelefone().getDdd();
+        String telefone = funcionario.getTelefone().getNumero();
         Optional<Telefone> optionalTelefone = telefoneRepository
-                .findByDddAndNumero(ddd, telefone);
+                .findByHashDddNumero(hashService.generateHash(ddd+telefone));
         if (optionalTelefone.isPresent()) {
             throw new ErrosSistema.EmpresaException(
                     "Telefone já cadastrado.");
@@ -171,8 +178,12 @@ public class CadastroFuncionariosService {
         novoFuncionario.setRg(encryptor.encrypt(funcionario.getRg()));
         novoFuncionario.setCpf(encryptor.encrypt(funcionario.getCpf()));
         novoFuncionario.setDataNascimento(encryptor.encrypt(funcionario.getDataNascimento()));
-        novoFuncionario.setEmail(encryptor.encrypt(funcionario.getEmail()));
         
+        //Hash
+        novoFuncionario.setHashNome(hashService.generateHash((funcionario.getNome())));
+        novoFuncionario.setHashRg(hashService.generateHash((funcionario.getRg())));
+        novoFuncionario.setHashCpf(hashService.generateHash((funcionario.getCpf())));
+
         //folha pagamento
         FolhaPagamento folhaPagamento = new FolhaPagamento();
         folhaPagamento.setTipoContrato(funcionario.getFolhaPagamento().getTipoContrato());
@@ -202,11 +213,16 @@ public class CadastroFuncionariosService {
         novoFuncionario.setTelefone(new Telefone());
         novoFuncionario.getTelefone().setDdd(encryptor.encrypt(funcionario.getTelefone().getDdd()));
         novoFuncionario.getTelefone().setNumero(encryptor.encrypt(funcionario.getTelefone().getNumero()));
+        //hash
+        novoFuncionario.getTelefone().setHashDddNumero(hashService.generateHash(funcionario.getTelefone().getDdd() + funcionario.getTelefone().getNumero()));
         
         //Login
         novoFuncionario.setLogin(new Login()); 
         novoFuncionario.getLogin().setSenhaUsuario(encryptor.encrypt(funcionario.getSenha()));
         novoFuncionario.getLogin().setEmail(encryptor.encrypt(funcionario.getEmail()));
+        novoFuncionario.getLogin().setIdHistoricoLogin(funcionario.getIdPessoa());
+        //hash
+        novoFuncionario.getLogin().setHashEmail(hashService.generateHash((funcionario.getEmail())));
     
         //endereco
         novoFuncionario.setEndereco(new Endereco());
@@ -217,7 +233,9 @@ public class CadastroFuncionariosService {
         novoFuncionario.getEndereco().setCidade(encryptor.encrypt(funcionario.getEndereco().getCidade()));
         novoFuncionario.getEndereco().setEstado(encryptor.encrypt(funcionario.getEndereco().getEstado()));
         novoFuncionario.getEndereco().setCep(encryptor.encrypt(funcionario.getEndereco().getCep()));
-
+        //hash
+        novoFuncionario.getEndereco().setHashLogradouro(hashService.generateHash((funcionario.getEndereco().getLogradouro())));
+        novoFuncionario.getEndereco().setHashCep(hashService.generateHash((funcionario.getEndereco().getCep())));
     }
     
     public String decrypt(String encryptedValue) {

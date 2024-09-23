@@ -14,9 +14,6 @@ public abstract class Pessoa {
     @Column(name = "id_pessoa")
     private Integer idPessoa;
 
-    @Column(name = "email", nullable = false)
-    private String email;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_login", nullable = false, unique = true)
     private Login login;

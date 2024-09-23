@@ -16,6 +16,9 @@ public class Telefone {
     @Column(name = "ddd", nullable = false)
     private String ddd;
 
-    @Column(name = "numero", nullable = false, unique = true)
+    @Column(name = "numero", nullable = false)
     private String numero;
+
+    @Column(name = "hash_Ddd_numero", nullable = false, unique = true)
+    private String hashDddNumero;
 }
