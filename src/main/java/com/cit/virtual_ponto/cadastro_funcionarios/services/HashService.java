@@ -10,7 +10,7 @@ public class HashService {
 
     public String generateHash(String input) {
         try {
-            // Use SHA-256 para gerar um hash fixo
+            // Usa SHA-256 para gerar um hash fixo
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(hashBytes);

@@ -22,11 +22,11 @@ public class BancoHorasEntity implements Serializable {
     private Integer idBancoHoras;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_saldo_horas", unique = true)
+    @JoinColumn(name = "id_saldo_horas")
     private SaldoHorasEntity saldoHoras;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_jornada_trabalho", unique = true)
+    @JoinColumn(name = "id_jornada_trabalho")
     private JornadaTrabalhoEntity jornadaTrabalho;
 
     @Column(name = "data_inicio_apuracao", nullable = false)

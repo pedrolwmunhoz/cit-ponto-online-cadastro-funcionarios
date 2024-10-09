@@ -48,49 +48,49 @@ public class CadastroFuncionariosController {
         FuncionarioDto novoFuncionario = new FuncionarioDto();
 
         // Configuração do ID do funcionário
-        novoFuncionario.setIdFuncionario(1);
+        novoFuncionario.setIdFuncionario(4);
 
         // Configuração do CPF e RG
-        novoFuncionario.setCpf("12345678901");
-        novoFuncionario.setRg("123456789");
+        novoFuncionario.setCpf("12545678901");
+        novoFuncionario.setRg("225456789");
 
         // Configuração da data de nascimento
         novoFuncionario.setDataNascimento("1990-01-01");
 
         // Configuração dos IDs de empresa, departamento e cargo
         novoFuncionario.setIdEmpresa(1);
-        novoFuncionario.setNome("Pedro Munhoz");
+        novoFuncionario.setNome("Peedro Munhoz");
         novoFuncionario.setIdDepartamento(1);
         novoFuncionario.setIdCargo(1);
-        novoFuncionario.setEmail("funcionario@example.com");
+        novoFuncionario.setEmail("1uncionario2@example.com");
         novoFuncionario.setSenha("senha123");
 
         // Configuração do telefone
         TelefoneDto telefone = new TelefoneDto();
         telefone.setDdd("11");
-        telefone.setNumero("9987654321");
+        telefone.setNumero("1287654321");
         novoFuncionario.setTelefone(telefone);
 
         // Configuração do login
         LoginDto login = new LoginDto();
-        login.setEmail("funcionario@example.com");
+        login.setEmail("f222ncionario@example.com");
         login.setSenha("senha123");
         novoFuncionario.setLogin(login);
 
         // Configuração do endereço
         EnderecoDto endereco = new EnderecoDto();
-        endereco.setLogradouro("Rua Exemplo");
+        endereco.setLogradouro("Ru12 Exemple");
         endereco.setNumero("100");
         endereco.setComplemento("Apto 202");
         endereco.setBairro("Centro");
         endereco.setCidade("São Paulo");
         endereco.setEstado("SP");
-        endereco.setCep("12345-678");
+        endereco.setCep("24345-679");
         novoFuncionario.setEndereco(endereco);
 
         // Configuração da folha de pagamento
         FolhaPagamentoDto folhaPagamento = new FolhaPagamentoDto();
-        folhaPagamento.setIdFolhaPagamento(1);
+        folhaPagamento.setIdFolhaPagamento(novoFuncionario.getIdFuncionario());
         folhaPagamento.setTipoContrato("CLT");
         folhaPagamento.setDataAdmissao(new Date());
         folhaPagamento.setNumeroFilhos(2);
@@ -99,7 +99,7 @@ public class CadastroFuncionariosController {
 
         // Configuração da jornada de trabalho
         JornadaTrabalhoDto jornadaTrabalho = new JornadaTrabalhoDto();
-        jornadaTrabalho.setIdJornadaTrabalho(1);
+        jornadaTrabalho.setIdJornadaTrabalho(novoFuncionario.getIdFuncionario());
         jornadaTrabalho.setGeolocalizacaoPermitida("São Paulo, SP");
         jornadaTrabalho.setJornadaTrabalhoHoras(LocalTime.of(8, 0));
         jornadaTrabalho.setHorarioEntrada(LocalTime.of(9, 0));

@@ -220,7 +220,7 @@ public class CadastroFuncionariosService {
         novoFuncionario.setLogin(new Login()); 
         novoFuncionario.getLogin().setSenhaUsuario(encryptor.encrypt(funcionario.getSenha()));
         novoFuncionario.getLogin().setEmail(encryptor.encrypt(funcionario.getEmail()));
-        novoFuncionario.getLogin().setIdHistoricoLogin(funcionario.getIdPessoa());
+        novoFuncionario.getLogin().setIdHistoricoLogin(funcionario.getIdFuncionario());
         //hash
         novoFuncionario.getLogin().setHashEmail(hashService.generateHash((funcionario.getEmail())));
     
